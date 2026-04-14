@@ -2,37 +2,35 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-// header("Access-Control-Allow-Credentials: true");
-// header("Content-Type: application/json");
-// header("Vary: Origin");
+header("Content-Type: application/json; charset=UTF-8");
 
-// Manejar la petición OPTIONS (Preflight) que hace el navegador
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-$host = "sql201.infinityfree.com";
-$user = "if0_41460136";
-$pass = "lb6odmfhY7Hc1";
-$db   = "if0_41460136_sira_db";
+$host = "dpg-d7f7q13bc2fs73djih20-a";
+$user = "sira_db_user";
+$pass = "sMvVi1QQZpXKu0BlZszgMk0MXnUdg4y0";
+$db   = "sira_db";
 
-$conn = new mysqli($host, $user, $pass, $db);
+// Conexión a PostgreSQL
+$conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
 
-if ($conn->connect_error) {
-    die(json_encode(["error" => "Conexión fallida"]));
+if (!$conn) {
+    die(json_encode(["error" => "No se pudo conectar a PostgreSQL en Render"]));
 }
 
-// Consultamos los reportes ordenados del más reciente al más antiguo
-$sql = "SELECT * FROM reportes ORDER BY fecha DESC";
-$result = $conn->query($sql);
+// Consultamos (Agregué la columna 'fecha' para que no falle el ORDER BY)
+$sql = "SELECT id, descripcion, foto, latitud, longitud, direccion_manual, nombre_informante, telefono_informante, fecha FROM reportes ORDER BY fecha DESC";
+$result = pg_query($conn, $sql);
 
-$reportes = [];
+$reportes_finales = [];
 
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        // Reconstruimos la estructura que espera React
-        $reportes[] = [
+if ($result) {
+    while ($row = pg_fetch_assoc($result)) {
+        // Reconstruimos la estructura exacta para SIRA.APP
+        $reportes_finales[] = [
             "id" => $row['id'],
             "description" => $row['descripcion'],
             "image" => $row['foto'],
@@ -43,12 +41,14 @@ if ($result->num_rows > 0) {
             ],
             "informantName" => $row['nombre_informante'],
             "informantPhone" => $row['telefono_informante'],
+            // Convertimos la fecha de Postgres a milisegundos para JS
             "timestamp" => strtotime($row['fecha']) * 1000,
             "status" => "sent"
         ];
     }
 }
 
-echo json_encode($reportes);
-$conn->close();
+echo json_encode($reportes_finales);
+
+pg_close($conn);
 ?>
