@@ -25,35 +25,31 @@ if (!$conn) {
 $data = json_decode(file_get_contents("php://input"), true);
 
 if ($data) {
-    // En Postgres usamos $1, $2, etc., para los parámetros preparados
     $sql = "INSERT INTO reportes (id, descripcion, foto, latitud, longitud, direccion_manual, nombre_informante, telefono_informante) 
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
 
-    // Preparamos los valores en un array ordenado
+    // Usamos ?? para dar valores por defecto si los campos vienen vacíos o nulos
     $params = array(
-        $data['id'], 
-        $data['description'], 
-        $data['image'], 
-        $data['location']['latitude'], 
-        $data['location']['longitude'],
-        $data['location']['manualAddress'],
-        $data['informantName'],
-        $data['informantPhone']
+        $data['id'] ?? uniqid(), 
+        $data['description'] ?? '', 
+        $data['image'] ?? null, 
+        $data['location']['latitude'] ?? 0, 
+        $data['location']['longitude'] ?? 0,
+        $data['location']['manualAddress'] ?? 'No proporcionada',
+        $data['informantName'] ?? 'Anónimo',
+        $data['informantPhone'] ?? ''
     );
 
-    // Ejecutamos la consulta
     $result = pg_query_params($conn, $sql, $params);
 
     if ($result) {
         echo json_encode(["message" => "Reporte guardado exitosamente"]);
     } else {
-        // Obtenemos el último error de Postgres para saber qué pasó
         echo json_encode(["error" => "Error al guardar: " . pg_last_error($conn)]);
     }
 } else {
     echo json_encode(["error" => "No se recibieron datos"]);
 }
 
-// Cerramos la conexión
 pg_close($conn);
 ?>
