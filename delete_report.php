@@ -18,7 +18,8 @@ $data = json_decode(file_get_contents("php://input"), true);
 $id = $data['id'] ?? null;
 
 if ($id) {
-    $result = pg_query_params($conn, "DELETE FROM reportes WHERE id = $1", array($id));
+    $sql = "UPDATE reportes SET estado = 'finalizado', fecha_finalizado = NOW() WHERE id = $1";
+    $result = pg_query_params($conn, $sql, array($id));
     echo json_encode(["success" => true]);
 } else {
     echo json_encode(["error" => "ID no recibido"]);
