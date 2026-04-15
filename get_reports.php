@@ -24,7 +24,7 @@ if (!$conn) {
 }
 
 // Consultamos (Agregué la columna 'fecha' para que no falle el ORDER BY)
-$sql = "SELECT id, descripcion, foto, latitud, longitud, direccion_manual, nombre_informante, telefono_informante, fecha FROM reportes ORDER BY fecha DESC";
+$sql = "SELECT * FROM reportes WHERE estado = 'activo' ORDER BY fecha DESC";
 $result = pg_query($conn, $sql);
 
 $reportes_finales = [];
