@@ -12,10 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 // Datos de conexión (Internal)
-$host = "dpg-d7f7q13bc2fs73djih20-a";
-$user = "sira_db_user";
-$pass = "sMvVi1QQZpXKu0BlZszgMk0MXnUdg4y0";
-$db   = "sira_db";
+$host = "dpg-d8bj0mmq1p3s73dq0nc0-a";
+$user = "sira_db_v2_user";
+$pass = "ChC8u6Qoml6SKACjBJ8KDRWY95SJU54n";
+$db   = "sira_db_v2";
 
 $conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
 
