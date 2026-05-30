@@ -1,5 +1,6 @@
 <?php
 // Configuración de la base de datos (Render Internal)
+//Comentario para un git add .
 $host = "dpg-d8d6n1gjs32c73f8j0sg-a";
 $user = "sira_db_v2_vsd9_user";
 $pass = "68Li4gEIewWXAofNNXLyyzjMnQclR5Nx";
