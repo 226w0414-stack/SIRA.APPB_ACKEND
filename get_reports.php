@@ -11,10 +11,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-$host = "dpg-d7f7q13bc2fs73djih20-a";
-$user = "sira_db_user";
-$pass = "sMvVi1QQZpXKu0BlZszgMk0MXnUdg4y0";
-$db   = "sira_db";
+$host = "dpg-d8d6n1gjs32c73f8j0sg-a";
+$user = "sira_db_v2_vsd9_user";
+$pass = "68Li4gEIewWXAofNNXLyyzjMnQclR5Nx";
+$db   = "sira_db_v2_vsd9";
 
 // Conexión a PostgreSQL
 $conn = pg_connect("host=$host dbname=$db user=$user password=$pass");

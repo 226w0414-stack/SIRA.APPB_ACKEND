@@ -7,10 +7,10 @@ header("Content-Type: application/json");
 include 'conexion.php';
 
 // Incluye tu lógica de conexión aquí (la que ya usamos en save_report.php)
-$host = "dpg-d7f7q13bc2fs73djih20-a";
-$user = "sira_db_user";
-$pass = "sMvVi1QQZpXKu0BlZszgMk0MXnUdg4y0";
-$db   = "sira_db";
+$host = "dpg-d8d6n1gjs32c73f8j0sg-a";
+$user = "sira_db_v2_vsd9_user";
+$pass = "68Li4gEIewWXAofNNXLyyzjMnQclR5Nx";
+$db   = "sira_db_v2_vsd9";
 
 $conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
 
