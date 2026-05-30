@@ -1,57 +1,25 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-header("Content-Type: application/json; charset=UTF-8");
+include 'conexion.php'; // Usa tu archivo de conexión configurado
 
-include 'conexion.php';
+$sql = "CREATE TABLE IF NOT EXISTS reportes (
+    id VARCHAR(255) PRIMARY KEY,
+    descripcion TEXT,
+    foto TEXT,
+    latitud NUMERIC,
+    longitud NUMERIC,
+    direccion_manual TEXT,
+    nombre_informante TEXT,
+    telefono_informante TEXT,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado VARCHAR(20) DEFAULT 'activo',
+    fecha_finalizado TIMESTAMP
+);";
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit;
-}
+$result = pg_query($conn, $sql);
 
-// Datos de conexión (Internal)
-$host = "dpg-d8d6n1gjs32c73f8j0sg-a";
-$user = "sira_db_v2_vsd9_user";
-$pass = "68Li4gEIewWXAofNNXLyyzjMnQclR5Nx";
-$db   = "sira_db_v2_vsd9";
-
-$conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
-
-if (!$conn) {
-    die(json_encode(["error" => "No se pudo conectar a PostgreSQL en Render"]));
-}
-
-// Leer los datos de React
-$data = json_decode(file_get_contents("php://input"), true);
-
-if ($data) {
-    $sql = "INSERT INTO reportes (id, descripcion, foto, latitud, longitud, direccion_manual, nombre_informante, telefono_informante) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
-
-    // Usamos ?? para dar valores por defecto si los campos vienen vacíos o nulos
-    $params = array(
-        $data['id'] ?? uniqid(), 
-        $data['description'] ?? '', 
-        $data['image'] ?? null, 
-        $data['location']['latitude'] ?? 0, 
-        $data['location']['longitude'] ?? 0,
-        $data['location']['manualAddress'] ?? 'No proporcionada',
-        $data['informantName'] ?? 'Anónimo',
-        $data['informantPhone'] ?? ''
-    );
-
-    $result = pg_query_params($conn, $sql, $params);
-
-    if ($result) {
-        echo json_encode(["message" => "Reporte guardado exitosamente"]);
-    } else {
-        echo json_encode(["error" => "Error al guardar: " . pg_last_error($conn)]);
-    }
+if ($result) {
+    echo "Tabla 'reportes' creada correctamente con las variables del sistema.";
 } else {
-    echo json_encode(["error" => "No se recibieron datos"]);
+    echo "Error al crear la tabla: " . pg_last_error($conn);
 }
-
-pg_close($conn);
 ?>
